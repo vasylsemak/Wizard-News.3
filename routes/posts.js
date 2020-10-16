@@ -14,13 +14,27 @@ router.get("/", async (req, res, next) => {
   } catch (error) { next(error) }
 });
 
-router.get('/add', (req, res) => {
-  res.send(addPost());
-})
-
-router.get('/:id', async (req, res, next) => {
+router.post("/", async (req, res, next) => {
   try {
-    const data = await client.query(baseQuery + "WHERE posts.id = $1", [req.params.id]);
+    const { name, title, content } = req.body;
+    const userData = await client.query('SELECT * FROM users WHERE name=$1',
+      [name]);
+    if(!userData.rows.length) {
+      userData = await client.query('INSERT INTO users (name) VALUES ($1) RETURNING *',
+        [name]);
+    }
+    await client.query('INSERT INTO posts (userId, title, content) VALUES ($1, $2, $3)',
+      [userData.rows[0].id, title, content]);
+    res.redirect('/posts');
+  } catch (error) { next(error) }
+});
+
+router.get("/add", (req, res) => { res.send(addPost()) });
+
+router.get("/:id", async (req, res, next) => {
+  try {
+    const data = await client.query(baseQuery + "WHERE posts.id = $1",
+      [req.params.id]);
     const post = data.rows[0];
     res.send(postDetails(post));
   } catch (error) { next(error) }
