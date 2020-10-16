@@ -1,5 +1,4 @@
-const express = require("express");
-const router = express.Router();
+const router = ("express").Router();
 const client = require("../db");
 const postList = require("../views/postList");
 const postDetails = require("../views/postDetails");

@@ -13,6 +13,4 @@ app.use("/posts", routes);
 app.get("*", (req, res) => { res.redirect("/posts") });
 
 const PORT = 1337;
-app.listen(PORT, () => {
-  console.log(`App listening in port ${PORT}`);
-});
+app.listen(PORT, () => { console.log(`App listening in port ${PORT}`) });
